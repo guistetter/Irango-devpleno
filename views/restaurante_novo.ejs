@@ -9,24 +9,25 @@
             <label for="nome">Novo restaurante:</label>
             <input type="text" name="nome" id="nome" class="form-control" placeholder="Nome do Restaurante"/>
         </div>
-        <!-- <div id="map" style="height: 400px;"></div>
-        <input type="hidden" name="lat" id="lat"/>
-        <input type="hidden" name="lng" id="lng"/> -->
+        <div id="map" style="height: 400px;"></div>
+        <input name="lat" id="lat"/>
+        <input name="lng" id="lng"/>
         <button type="submit" class="btn btn-primary">Salvar</button>
     </form>
 </div>
 
 <script>
-    function updatePosition(lat, lng) {
-        document.getElementById('lat').value = lat;
-        document.getElementById('lng').value = lng;
-        //document.getElementById('lat').value = marker.position.lat();
-        //document.getElementById('lng').value = marker.position.lng();
-    }
+    // function updatePosition(lat, lng) {
+    //     document.getElementById('lat').value = lat;
+    //     document.getElementById('lng').value = lng;
+    //     //document.getElementById('lat').value = marker.position.lat();
+    //     //document.getElementById('lng').value = marker.position.lng();
+    // }
     function initMap() {
-        var initialLocation = {lat: -34.397, lng: 150.644};
-        // Create a map object and specify the DOM element for display.
-        var map = new google.maps.Map(document.getElementById('map'), {
+        initialLocation = {lat: -21.7045806, lng: -47.2761638};
+
+         // Create a map object and specify the DOM element for display.
+        const map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 16,
                 center: initialLocation
         });
@@ -39,18 +40,25 @@
 
         if (navigator.geolocation){
             navigator.geolocation.getCurrentPosition(function(position){
-                let latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
+                var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
                 marker.setPosition(latlng)
                 map.panTo(latlng)
-                updatePosition(position.coords.latitude, position.coords.longitude)
+                //updatePosition(position.coords.latitude, position.coords.longitude)
+                document.getElementById('lat').value = marker.position.lat()
+                document.getElementById('lng').value = marker.position.lng()
             })
         }
-
+       
         marker.addListener('dragend', function(){
-            updatePosition(marker.position.lat(), marker.position.lng())
+            console.log(marker.position.lat(), marker.position.lng())
+            document.getElementById('lat').value = marker.position.lat()
+            document.getElementById('lng').value = marker.position.lng()
+            //updatePosition(marker.position.lat(), marker.position.lng())
         })
     }
+
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA2Q-yuxdDBFlisMhmHSJvJWzfUY5GettA&callback=initMap" type="text/javascript">
+    <script async defer 
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA2Q-yuxdDBFlisMhmHSJvJWzfUY5GettA&callback=initMap" type="text/javascript">
     </script>
 <% include elements/footer %>

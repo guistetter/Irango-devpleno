@@ -2,6 +2,8 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT || 3000
 const mongodb =require('mongodb')
+const bodyParser = require('body-parser')
+const ObjectID = mongodb.ObjectID
 
 let database 
 
@@ -21,18 +23,34 @@ const insert = (db, collectionName, doc) => {
 const find = (db, collectionName, filter) => {
   return new Promise((resolve, reject) => {
     const collection = db.collection(collectionName)
-    collection.find(filter, (err, results) =>{
+    const cursor =collection.find(filter)
+    const results = []
+    cursor.forEach(doc => results.push(doc),
+      err => {
+        if(err){
+          reject(err)
+        }else{
+          resolve(results)
+        }
+      })
+  })
+}
+
+const deleteOne = (db, collectionName, filter) =>{
+  return new Promise((resolve, reject) => {
+    const collection = db.collection(collectionName)
+    collection.deleteOne(filter, (err, results) => {
       if(err){
         reject(err)
-      }else{
+      } else{
         resolve(results)
       }
     })
   })
 }
-
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
+app.use(bodyParser.urlencoded())
 
 app.get('/', (req, res) => {
   const items = [{name: 'teste1'}, {name: 'teste2'}]
@@ -41,15 +59,27 @@ app.get('/', (req, res) => {
 
 app.get('/restaurantes', async (req, res) => {
   const restaurantes = await find(database, 'restaurantes', {})
-  res.render('restaurantes',{restaurantes})
+  //restaurantes.forEach(r => console.log(r))
+  res.render('restaurantes', {restaurantes})
 })
 
 app.get('/restaurantes/novo', async (req, res) => {
   res.render('restaurante_novo')
 })
 
-app.post('/restaurantes/novo', (req, res) => {
-  
+app.post('/restaurantes/novo', async(req, res) => {
+  const restaurante = {
+    nome: req.body.nome
+  }
+  await insert(database, 'restaurantes', restaurante)
+  res.redirect('/restaurantes')
+})
+
+app.get('/restaurantes/delete/:id', async(req,res) => {
+  await deleteOne(database, 'restaurantes', {
+    _id: ObjectID(req.params.id)
+  })
+  res.redirect('/restaurantes')
 })
 
 const MongoClient = mongodb.MongoClient

@@ -5,18 +5,15 @@
         <p><a href="/restaurantes/novo">Novo restaurante</a> | <a href="/restaurants/distancia">Ver distância</a> </p>
             <table class="table table-hover">
                 <thead>
-                    <tr>
-                        <hr>Nome</hr>
-                    </tr>
-                    <tr>
-                        <hr></hr>
+                    <tr >
+                        <hr>Restaurantes Encontrados:</hr>
                     </tr>
                 </thead>
                 <tbody>
                     <% restaurantes.forEach( r => {%>
                         <tr>
                             <td><%=r.nome%></td>
-                            <td><a href="/restaurants/delete/<%=r._id%>" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i></a></td>
+                            <td><a href="/restaurantes/delete/<%=r._id%>" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i></a></td>
                         </tr>
                     <%})%>
                 </tbody>    

@@ -69,7 +69,11 @@ app.get('/restaurantes/novo', async (req, res) => {
 
 app.post('/restaurantes/novo', async(req, res) => {
   const restaurante = {
-    nome: req.body.nome
+    nome: req.body.nome,
+    loc:{
+      type: 'Point',
+      coordinates: [parseFloat(req.body.lng), parseFloat(req.body.lat)]
+    }
   }
   await insert(database, 'restaurantes', restaurante)
   res.redirect('/restaurantes')
